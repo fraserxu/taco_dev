@@ -1,0 +1,7 @@
+[package]
+name = "taco-dev"
+version = "0.1.0"
+authors = ["Fraser Xu <xvfeng123@gmail.com>"]
+
+[dependencies]
+clap = "2.29.2"
