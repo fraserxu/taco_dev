@@ -5,3 +5,4 @@ authors = ["Fraser Xu <xvfeng123@gmail.com>"]
 
 [dependencies]
 clap = "2.29.2"
+glob = "0.2.11"
