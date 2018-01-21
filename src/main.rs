@@ -13,11 +13,13 @@ static DNSMASQ_DEFAULT_CONFIG: &'static str =
 "address=/.test/127.0.0.1";
 
 fn copy_files(from: &str, to: &str) {
-    let mut from_paths: Vec<&str> = Vec::new();
     for entry in glob(from).expect("Failed to read glob pattern") {
         match entry {
-            // how to push the mathched path to the from_paths array
-            Ok(path) => println!("{:?}", path.display()),
+            Ok(path) => {
+                let file_os_string = path.into_os_string();
+                let file = file_os_string.to_str().unwrap();
+                run_command("cp", vec![file, to]);
+            },
             Err(e) => println!("{:?}", e),
         }
     }
@@ -38,10 +40,8 @@ fn run_command(cmd: &str, args: Vec<&str>) {
 }
 
 fn add_dnsmasq_to_launchctl() {
-    // copy_files("/usr/local/opt/dnsmasq/*.plist", "to");
-    // why is `cp` not working?
-    // run_command("cp", vec!["/usr/local/opt/dnsmasq/*.plist", "/Library/LaunchDaemons"]);
-    // run_command("launchctl", vec!["load", "/Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist"]);
+    copy_files("/usr/local/opt/dnsmasq/*.plist", "/Library/LaunchDaemons");
+    run_command("launchctl", vec!["load", "/Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist"]);
 }
 
 fn main() {
