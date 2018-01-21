@@ -57,3 +57,10 @@ typings/
 # dotenv environment variables file
 .env
 
+
+/target/
+**/*.rs.bk
+Cargo.lock
+
+/target/
+**/*.rs.bk
