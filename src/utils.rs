@@ -8,7 +8,7 @@ pub fn copy_files(from: &str, to: &str) {
                 let file_os_string = path.into_os_string();
                 let file = file_os_string.to_str().unwrap();
                 run_command("cp", vec![file, to]);
-            },
+            }
             Err(e) => println!("{:?}", e),
         }
     }
