@@ -5,13 +5,30 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::error::Error;
 
+pub fn copy_file(from: &str, to: &str) {
+    run_command("cp", vec![from, to]);
+}
+
 pub fn copy_files(from: &str, to: &str) {
     for entry in glob(from).expect("Failed to read glob pattern") {
         match entry {
             Ok(path) => {
                 let file_os_string = path.into_os_string();
                 let file = file_os_string.to_str().unwrap();
-                run_command("cp", vec![file, to]);
+                copy_file(file, to);
+            }
+            Err(e) => println!("{:?}", e),
+        }
+    }
+}
+
+pub fn ln_files(from: &str, to: &str) {
+    for entry in glob(from).expect("Failed to read glob pattern") {
+        match entry {
+            Ok(path) => {
+                let file_os_string = path.into_os_string();
+                let file = file_os_string.to_str().unwrap();
+                run_command("ln", vec!["-sfv", file, to]);
             }
             Err(e) => println!("{:?}", e),
         }
@@ -20,12 +37,12 @@ pub fn copy_files(from: &str, to: &str) {
 
 pub fn run_command(cmd: &str, args: Vec<&str>) {
     let command = Command::new(cmd)
-        .args(args)
+        .args(&args)
         .output()
         .expect("failed to execute process");
 
     if command.status.success() {
-        println!("{} succeeded", cmd);
+        println!("Finished: {} {:?}", cmd, args);
     } else {
         let s = String::from_utf8_lossy(&command.stderr);
         println!("{} failed, stderr: {}", cmd, s);

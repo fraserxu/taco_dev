@@ -4,13 +4,13 @@ A command line tool to setup a local domain environment for development using `n
 
 **Status:** Not ready.
 
-```
+```sh
 TacoDev 0.1.0
 Fraser Xu <xvfeng123@gmail.com>
 Taco Dev
 
 USAGE:
-    taco-dev [SUBCOMMAND]
+    taco_dev [SUBCOMMAND]
 
 FLAGS:
     -h, --help       Prints help information
@@ -20,12 +20,15 @@ SUBCOMMANDS:
     dnsmasq    Set up dnsmasq
     help       Prints this message or the help of the given subcommand(s)
     nginx      Set up NGINX
+    reload     Restart nginx
 ```
 
 ### Requirements
 
 * [`dnsmasq`](http://www.thekelleys.org.uk/dnsmasq/doc.html) - Dnsmasq provides network infrastructure for small networks: DNS, DHCP, router advertisement and network boot.
 * [`nginx`](https://nginx.org/en/) - HTTP and reverse proxy server.
+
+If you are on Mac and has `howebrew` installed, simply run `homebrew install dnsmasq nginx`.
 
 ### Usage
 
