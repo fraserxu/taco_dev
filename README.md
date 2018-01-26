@@ -77,9 +77,10 @@ server {
 }
 ```
 
-3. :tada:
+3. Reload nginx and :tada:
 
 ```sh
+$ taco-dev reload
 $ open http://taco-dev.test
 ```
 
