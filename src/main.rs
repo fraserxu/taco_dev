@@ -4,11 +4,11 @@ extern crate taco_dev;
 use std::fmt;
 use clap::{App, Arg, SubCommand};
 
-use taco_dev::utils::{copy_files, create_file, run_command};
+use taco_dev::utils::{copy_files, create_file, create_nginx_config, run_command};
 
 fn setup_dnsmasq(domain: &str) {
     let dns_conf = fmt::format(format_args!("address=/.{}/127.0.0.1", domain));
-    create_file("/usr/local/etc/dnsmasq.conf3", dns_conf.as_bytes());
+    create_file("/usr/local/etc/dnsmasq.conf", dns_conf.as_bytes());
     // Need to figure out how to `sudo` properly
     copy_files("/usr/local/opt/dnsmasq/*.plist", "/Library/LaunchDaemons");
     run_command(
@@ -18,17 +18,19 @@ fn setup_dnsmasq(domain: &str) {
 }
 
 fn setup_nginx(upstream_server: &str, server_name: &str, root: &str) {
-    println!("setting up nginx: {}", upstream_server);
+    let nginx_config_content = create_nginx_config(upstream_server, server_name, root);
+    let nginx_config_path = format!("/usr/local/etc/nginx/servers/{}", server_name);
+    create_file(&nginx_config_path, nginx_config_content.as_bytes());
     // ln -sfv /usr/local/opt/nginx/*.plist ~/Library/LaunchAgents
     // launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.nginx.plist
-    run_command(
-        "launchctl",
-        vec![
-            "load",
-            "-w",
-            "~/Library/LaunchAgents/homebrew.mxcl.nginx.plist",
-        ],
-    );
+    // run_command(
+    //     "launchctl",
+    //     vec![
+    //         "load",
+    //         "-w",
+    //         "~/Library/LaunchAgents/homebrew.mxcl.nginx.plist",
+    //     ],
+    // );
 }
 
 fn main() {
@@ -53,18 +55,21 @@ fn main() {
                     .short("u")
                     .long("upstream")
                     .value_name("UPSTREAM")
+                    .required(true)
                     .help("Nginx upstream server, can be either localhost or a local socket file."),
             ).arg(
                 Arg::with_name("server")
                     .short("s")
                     .long("server")
                     .value_name("SERVER")
+                    .required(true)
                     .help("The name for the server to setup."),
             ).arg(
                 Arg::with_name("root")
                     .short("r")
                     .long("root")
                     .value_name("ROOT")
+                    .required(true)
                     .help("Root path for the server."),
             ),
         );
@@ -79,10 +84,14 @@ fn main() {
 
     if let Some(matches) = matches.subcommand_matches("nginx") {
         println!("Setting up nginx...");
-        let upstream_server = matches.value_of("upstream").unwrap_or("127.0.0.1:8000");
-        let server_name = matches.value_of("server").unwrap_or("taco-dev");
-        let root = matches.value_of("root").unwrap_or("");
+        let upstream_server = matches.value_of("upstream");
+        let server_name = matches.value_of("server");
+        let root = matches.value_of("root");
 
-        setup_nginx(upstream_server, server_name, root);
+        setup_nginx(
+            upstream_server.unwrap(),
+            server_name.unwrap(),
+            root.unwrap(),
+        );
     }
 }
