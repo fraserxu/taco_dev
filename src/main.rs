@@ -11,18 +11,25 @@ use taco_dev::utils::{copy_files, run_command};
 
 static DNSMASQ_DEFAULT_CONFIG: &'static str = "address=/.test/127.0.0.1";
 
-fn add_dnsmasq_to_launchctl() {
+fn setup_dnsmasq() {
     // Need to figure out how to `sudo` properly
     copy_files("/usr/local/opt/dnsmasq/*.plist", "/Library/LaunchDaemons");
     run_command(
         "launchctl",
         vec!["load", "/Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist"],
     );
+}
+
+fn setup_nginx(upstream_server: &str) {
+    println!("setting up nginx: {}", upstream_server);
+    // ln -sfv /usr/local/opt/nginx/*.plist ~/Library/LaunchAgents
+    // launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.nginx.plist
     run_command(
-        "cp",
+        "launchctl",
         vec![
-            "/usr/local/opt/nginx/homebrew.mxcl.nginx.plist",
-            "/Library/LaunchAgents",
+            "load",
+            "-w",
+            "~/Library/LaunchAgents/homebrew.mxcl.nginx.plist",
         ],
     );
 }
@@ -71,15 +78,14 @@ fn main() {
             Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
             Ok(_) => {
                 println!("successfully wrote to {}", display);
-                add_dnsmasq_to_launchctl();
+                setup_dnsmasq();
             }
         }
         println!("Writing file to: {}", display);
     }
 
     if let Some(matches) = matches.subcommand_matches("nginx") {
-        println!("Setting up NGINX");
         let upstream_server = matches.value_of("upstream").unwrap_or("127.0.0.1:8000");
-        println!("Upstream server: {}", upstream_server);
+        setup_nginx(upstream_server);
     }
 }
