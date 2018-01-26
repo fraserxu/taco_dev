@@ -1,5 +1,9 @@
 use std::process::Command;
 use glob::glob;
+use std::path::Path;
+use std::fs::File;
+use std::io::prelude::*;
+use std::error::Error;
 
 pub fn copy_files(from: &str, to: &str) {
     for entry in glob(from).expect("Failed to read glob pattern") {
@@ -25,5 +29,22 @@ pub fn run_command(cmd: &str, args: Vec<&str>) {
     } else {
         let s = String::from_utf8_lossy(&command.stderr);
         println!("{} failed, stderr: {}", cmd, s);
+    }
+}
+
+pub fn create_file(target: &str, contents: &[u8]) {
+    let path = Path::new(target);
+    let display = path.display();
+
+    let mut file = match File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why.description()),
+        Ok(file) => file,
+    };
+
+    match file.write_all(contents) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
+        Ok(_) => {
+            println!("successfully wrote to {}", display);
+        }
     }
 }
