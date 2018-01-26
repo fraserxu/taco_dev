@@ -2,6 +2,8 @@
 name = "taco_dev"
 version = "0.1.0"
 authors = ["Fraser Xu <xvfeng123@gmail.com>"]
+description = "A Rust command line tool that setup a local domain environment for development using nginx and dnsmasq."
+license = "MIT"
 
 [dependencies]
 clap = "2.29.2"

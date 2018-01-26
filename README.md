@@ -1,4 +1,4 @@
-# taco-dev
+# taco_dev
 
 A command line tool to setup a local domain environment for development using `nginx` and `dnsmasq`.
 
@@ -35,14 +35,14 @@ If you are on Mac and has `howebrew` installed, simply run `homebrew install dns
 1. Setup `dnsmasq`
 
 ```sh
-$ taco-dev dnsmasq --domain=test
+$ taco_dev dnsmasq --domain=test
 ```
 
 To verify:
 
 ```sh
-$ ping teco-dev.test
-PING teco-dev.test (127.0.0.1): 56 data bytes
+$ ping taco_dev.test
+PING taco_dev.test (127.0.0.1): 56 data bytes
 ```
 
 2. Setup `nginx`
@@ -50,29 +50,29 @@ PING teco-dev.test (127.0.0.1): 56 data bytes
 To tell `nginx` to proxy a request to port `80`, we need to defined the upstream server. It can be either a local server running on a specific port `localhost:8080` or a unix socket object `unix:/tmp/example.test`.
 
 ```sh
-$ taco-dev nginx --upstream=127.0.0.1:8000 --server=taco-dev.test --root=/Users/fraserxu/projects/taco-dev;
+$ taco_dev nginx --upstream=127.0.0.1:8000 --server=taco_dev.test --root=/Users/fraserxu/projects/taco_dev;
 ```
 
-This will add a `taco-dev.conf` in `nginx/servers` directory.
+This will add a `taco_dev.conf` in `nginx/servers` directory.
 
 ```nginx
-upstream taco-dev.test {
-    server unix:/tmp/taco-dev;
+upstream taco_dev.test {
+    server unix:/tmp/taco_dev;
 }
 
 server {
     listen 80;
-    server_name taco-dev.test;
-    root /Users/fraserxu/projects/taco-dev;
+    server_name taco_dev.test;
+    root /Users/fraserxu/projects/taco_dev;
 
-    try_files $uri/index.html $uri @taco-dev.test;
+    try_files $uri/index.html $uri @taco_dev.test;
 
-    location @taco-dev.test {
+    location @taco_dev.test {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $http_host;
         proxy_redirect off;
 
-        proxy_pass http://taco-dev.test;
+        proxy_pass http://taco_dev.test;
     }
 }
 ```
@@ -80,8 +80,8 @@ server {
 3. Reload nginx and :tada:
 
 ```sh
-$ taco-dev reload
-$ open http://taco-dev.test
+$ taco_dev reload
+$ open http://taco_dev.test
 ```
 
 ### License
