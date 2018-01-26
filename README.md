@@ -47,7 +47,7 @@ PING teco-dev.test (127.0.0.1): 56 data bytes
 To tell `nginx` to proxy a request to port `80`, we need to defined the upstream server. It can be either a local server running on a specific port `localhost:8080` or a unix socket object `/tmp/example.test`.
 
 ```sh
-$ taco-dev nginx --upstream=127.0.0.1:8000 --domain=taco-dev
+$ taco-dev nginx --upstream=127.0.0.1:8000 --domain=taco-dev --root=/Users/fraserxu/projects/taco-dev;
 ```
 
 This will add a `taco-dev.conf` in `nginx/servers` directory.
@@ -60,7 +60,7 @@ upstream taco-dev.test {
 server {
     listen 80;
     server_name taco-dev.test;
-    root /Users/fraserxu/src/sso-server;
+    root /Users/fraserxu/projects/taco-dev;
 
     try_files $uri/index.html $uri @taco-dev.test;
 
