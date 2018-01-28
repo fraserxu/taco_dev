@@ -2,6 +2,12 @@
 
 A command line tool to setup a local domain environment for development using `nginx` and `dnsmasq`.
 
+### Installation
+
+```sh
+$ cargo install taco_dev
+```
+
 **Status:** Not ready.
 
 ```sh
