@@ -8,7 +8,7 @@ A command line tool to setup a local domain environment for development using `n
 $ cargo install taco_dev
 ```
 
-**Status:** Not ready.
+**Status:** Experiment.
 
 ```sh
 TacoDev 0.1.0
